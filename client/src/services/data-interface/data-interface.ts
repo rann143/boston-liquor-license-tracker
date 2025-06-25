@@ -10,7 +10,7 @@ export interface BusinessLicense {
   file_name: string;
 }
 
-type BostonZipCode =
+export type BostonZipCode =
   | "02021"
   | "02026"
   | "02108"
