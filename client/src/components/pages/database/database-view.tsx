@@ -16,7 +16,7 @@ type DataInfo = {
 };
 
 const DatabaseView = () => {
-  const [counts, setCounts] = useState<DataInfo>({
+  const [licenseCounts, setLicenseCounts] = useState<DataInfo>({
     zipCode: undefined,
     transferableLicenses: 0,
     nonTransferableLicenses: 195,
@@ -26,8 +26,8 @@ const DatabaseView = () => {
 
   useEffect(() => {
     const data = licensesJSON as BusinessLicense[];
-    setCounts({
-      ...counts,
+    setLicenseCounts({
+      ...licenseCounts,
       nonTransferableLicenses: getNumOfLicenses(data),
       allAlcoholLicenses: getNumOfLicenses(data, {
         filterByAlcoholType: "All Alcoholic Beverages",
@@ -51,8 +51,8 @@ const DatabaseView = () => {
       filterByAlcoholType: "Wines and Malt Beverages",
     });
 
-    setCounts({
-      ...counts,
+    setLicenseCounts({
+      ...licenseCounts,
       zipCode: zip,
       nonTransferableLicenses: total,
       allAlcoholLicenses: allAlc,
@@ -74,7 +74,7 @@ const DatabaseView = () => {
       <h1>Database View</h1>
       <p>This is where the database content will be displayed.</p>
       <button
-        onClick={() => onZipFilterChange("02128")}
+        onClick={() => onZipFilterChange("02118")}
         style={{ backgroundColor: "grey" }}
       >
         filter zip
@@ -82,10 +82,10 @@ const DatabaseView = () => {
 
       {/* PLACEHOLDER */}
       <BreakdownChart
-        transferableLicenses={counts.transferableLicenses}
-        nonTransferableLicenses={counts.nonTransferableLicenses}
-        allAlcoholLicenses={counts.allAlcoholLicenses}
-        wineAndBeerLicenses={counts.wineAndBeerLicenses}
+        transferableLicenses={licenseCounts.transferableLicenses}
+        nonTransferableLicenses={licenseCounts.nonTransferableLicenses}
+        allAlcoholLicenses={licenseCounts.allAlcoholLicenses}
+        wineAndBeerLicenses={licenseCounts.wineAndBeerLicenses}
       />
     </section>
   );
