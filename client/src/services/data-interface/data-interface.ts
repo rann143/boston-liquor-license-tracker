@@ -295,7 +295,7 @@ export function getAvailableLicensesByZipcode(
 
 export function getZipcodesWithAvailableLicenses(
   data: BusinessLicense[],
-  alcoholType: string
+  alcoholType?: "All Alcoholic Beverages" | "Wines and Malt Beverages"
 ): Array<{
   zipcode: BostonZipCode;
   totalAvailable: number;
@@ -316,16 +316,24 @@ export function getZipcodesWithAvailableLicenses(
       // Check if this zipcode has available licenses based on criteria
       let hasAvailableLicenses = false;
 
-      if (
-        alcoholType === "All Alcoholic Beverages" &&
-        allAlcoholAvailable > 0
-      ) {
-        hasAvailableLicenses = true;
-      } else if (
-        alcoholType === "Wines and Malt Beverages" &&
-        beerWineAvailable > 0
-      ) {
-        hasAvailableLicenses = true;
+      if (alcoholType) {
+        if (
+          alcoholType === "All Alcoholic Beverages" &&
+          allAlcoholAvailable > 0
+        ) {
+          hasAvailableLicenses = true;
+        } else if (
+          alcoholType === "Wines and Malt Beverages" &&
+          beerWineAvailable > 0
+        ) {
+          hasAvailableLicenses = true;
+        }
+      } else {
+        // If no specific alcohol type, check if any licenses are available
+        hasAvailableLicenses =
+          totalAvailable > 0 ||
+          allAlcoholAvailable > 0 ||
+          beerWineAvailable > 0;
       }
 
       if (hasAvailableLicenses) {

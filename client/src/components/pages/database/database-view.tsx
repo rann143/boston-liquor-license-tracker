@@ -57,14 +57,16 @@ const DatabaseView = () => {
     });
   }
 
-  function onTypeChange(filter: string) {
+  function onTypeChange(
+    filter: "All Alcoholic Beverages" | "Wines and Malt Beverages" | "All"
+  ) {
     const data = licensesJSON as BusinessLicense[];
-    const zips = getZipcodesWithAvailableLicenses(
-      data,
-      "All Alcoholic Beverages"
-    );
 
-    return zips;
+    if (filter === "All") {
+      return getZipcodesWithAvailableLicenses(data);
+    } else {
+      return getZipcodesWithAvailableLicenses(data, filter);
+    }
   }
 
   return (
@@ -79,7 +81,7 @@ const DatabaseView = () => {
       </button>
 
       <ul>
-        {onTypeChange("All Alcoholic Beverages").map((item, index) => (
+        {onTypeChange("Wines and Malt Beverages").map((item, index) => (
           <li key={index}>
             {item.zipcode}: Total={item.totalAvailable}, Alc=
             {item.allAlcoholAvailable}, BW={item.beerWineAvailable}
