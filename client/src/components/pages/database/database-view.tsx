@@ -6,6 +6,10 @@ import getNumOfLicenses, {
   BostonZipCode,
 } from "@/services/data-interface/data-interface";
 import licensesJSON from "../../../data/licenses.json";
+import {
+  getAvailableLicensesByZipcode,
+  getZipcodesWithAvailableLicenses,
+} from "@/services/data-interface/data-interface";
 
 type DataInfo = {
   zipCode: BostonZipCode | undefined;
@@ -38,36 +42,30 @@ const DatabaseView = () => {
     });
   }, []);
 
-  const onZipFilterChange = (filter: string): void => {
+  function onZipFilterChange(filter: string) {
     const data = licensesJSON as BusinessLicense[];
     const zip = filter as BostonZipCode;
-    const total = getNumOfLicenses(data, { filterByZipcode: zip });
-    const allAlc = getNumOfLicenses(data, {
-      filterByZipcode: zip,
-      filterByAlcoholType: "All Alcoholic Beverages",
-    });
-    const beerAndWine = getNumOfLicenses(data, {
-      filterByZipcode: zip,
-      filterByAlcoholType: "Wines and Malt Beverages",
-    });
+    const { totalAvailable, allAlcoholAvailable, beerWineAvailable } =
+      getAvailableLicensesByZipcode(data, zip);
 
     setLicenseCounts({
       ...licenseCounts,
       zipCode: zip,
-      nonTransferableLicenses: total,
-      allAlcoholLicenses: allAlc,
-      wineAndBeerLicenses: beerAndWine,
+      nonTransferableLicenses: totalAvailable,
+      allAlcoholLicenses: allAlcoholAvailable,
+      wineAndBeerLicenses: beerWineAvailable,
     });
-  };
+  }
 
-  // const onLicenseTypeFilterChange = (filter: string): void => {
-  //   const data = licensesJSON as BusinessLicense[];
-  //   const type = filter;
+  function onTypeChange(filter: string) {
+    const data = licensesJSON as BusinessLicense[];
+    const zips = getZipcodesWithAvailableLicenses(
+      data,
+      "All Alcoholic Beverages"
+    );
 
-  //   const licenses = getNumOfLicenses(data, { filterByAlcoholType: type });
-
-  //   setCounts({ ...counts });
-  // };
+    return zips;
+  }
 
   return (
     <section className="database-view">
@@ -79,6 +77,15 @@ const DatabaseView = () => {
       >
         filter zip
       </button>
+
+      <ul>
+        {onTypeChange("All Alcoholic Beverages").map((item, index) => (
+          <li key={index}>
+            {item.zipcode}: Total={item.totalAvailable}, Alc=
+            {item.allAlcoholAvailable}, BW={item.beerWineAvailable}
+          </li>
+        ))}
+      </ul>
 
       {/* PLACEHOLDER */}
       <BreakdownChart
